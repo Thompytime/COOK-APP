@@ -1,0 +1,66 @@
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modal-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    position: relative;
+  }
+  
+  .rating-form label {
+    display: block;
+    margin-bottom: 1rem;
+  }
+  
+  .rating-form input[type="number"] {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
+  
+  .rating-form textarea,
+  .rating-form input[type="text"],
+  .rating-form input[type="file"] {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
+  
+  .social-share-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 1rem;
+  }
+  
+  .social-share-buttons button {
+    flex: 1 1 48%;
+    background-color: #2c3e50;
+    color: white;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .social-share-buttons button:hover {
+    opacity: 0.9;
+  }
+  
+  .image-preview {
+    margin-top: 1rem;
+  }
