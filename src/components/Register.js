@@ -1,46 +1,40 @@
 // src/components/Register.js
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { supabase } from '../supabaseClient';
+import React from 'react'
+import { useNavigate } from 'react-router-dom'
+import { supabase } from '../supabaseClient'
 
 const Register = () => {
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
-  const [username, setUsername] = React.useState(''); // Keep username state if needed elsewhere, or remove if only for profile
-  const navigate = useNavigate();
+  const [email, setEmail] = React.useState('')
+  const [password, setPassword] = React.useState('')
+  const [username, setUsername] = React.useState('')
+  const navigate = useNavigate()
 
   const handleRegister = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
-    // Step 1: Sign up the user
-    // We pass the username in the 'options.data' field.
-    // This data will be available in the 'new' record inside a database trigger function.
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: {
-          username: username, // Pass username here
+          username,
         },
       },
-    });
+    })
 
     if (error) {
-      alert(`Registration failed: ${error.message}`);
-      return;
+      alert(`Registration failed: ${error.message}`)
+      return
     }
 
-    // If signUp is successful (data.user exists), prompt for email confirmation.
-    // The profile creation logic is now removed from here.
     if (data?.user) {
-      alert('Check your email for confirmation!');
-      navigate('/login'); // Redirect to login page after sign up request
-    } else if (!error) {
-       // Handle cases where sign up doesn't return a user but also no error (might indicate email confirmation needed)
-       alert('Check your email for confirmation link!');
-       navigate('/login');
+      alert('Check your email to confirm your account')
+      navigate('/login')
+    } else {
+      alert('Registration successful! Please check your inbox for confirmation.')
+      navigate('/login')
     }
-  };
+  }
 
   return (
     <div className="registration-form">
@@ -70,17 +64,25 @@ const Register = () => {
           required
           autoComplete="new-password"
         />
-        <button type="submit">Sign Up</button>
+
+        <button type="submit" className="rate-meals-button">
+          Sign Up
+        </button>
       </form>
 
       <p>
         Already have an account?{' '}
-        <button onClick={() => navigate('/login')} style={{ background: 'none', color: '#3498db', cursor: 'pointer' }}>
+        <button
+          type="button"
+          onClick={() => navigate('/login')}
+          className="rate-meals-button"
+          style={{ marginLeft: 0 }}
+        >
           Log in
         </button>
       </p>
     </div>
-  );
-};
+  )
+}
 
-export default Register;
+export default Register

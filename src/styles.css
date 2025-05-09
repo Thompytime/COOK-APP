@@ -12,26 +12,59 @@ nav {
   padding: 1rem 2rem;
   color: white;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  z-index: 10;
   position: relative;
+  z-index: 10;
 }
 
 nav h2 {
   margin: 0;
   color: #fff;
+  flex: 1;
 }
 
-a,
-button {
-  text-decoration: none;
-  background: #3498db;
+.nav-buttons {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 5;
+}
+
+/* User actions - Hi username + Logout */
+.user-actions {
+  position: absolute;
+  right: 2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 5;
+}
+
+.user-actions span {
+  font-size: 1rem;
+  color: white;
+}
+
+.user-actions a,
+.user-actions button {
+  background-color: #3498db;
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  padding: 0.6rem 1rem;
   cursor: pointer;
-  margin-left: 10px;
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+.user-actions a:hover,
+.user-actions button:hover {
+  background-color: #2980b9;
+  text-decoration: none;
 }
 
 /* Top logo section */
@@ -145,24 +178,37 @@ textarea {
 }
 
 /* Links and buttons */
-.home-buttons {
-  margin-top: 2rem;
-  text-align: center;
-}
-
-.rate-meals-button {
+.base-button,
+.rate-meals-button,
+.rate-this-meal-button,
+nav a,
+nav button,
+.social-share-buttons button,
+.rating-form button[type="submit"],
+.rating-form button[type="button"] {
   display: inline-block;
-  padding: 1rem 2rem;
+  padding: 0.6rem 1rem;
   background-color: #3498db;
   color: white;
   border: none;
   border-radius: 5px;
-  font-size: 1.2rem;
   cursor: pointer;
   text-decoration: none;
+  font-size: 1rem;
 }
 
-/* Button for rating individual meals (used in RateMeals.js) */
+.base-button:hover,
+.rate-meals-button:hover,
+.rate-this-meal-button:hover,
+nav a:hover,
+nav button:hover,
+.social-share-buttons button:hover,
+.rating-form button[type="submit"]:hover,
+.rating-form button[type="button"]:hover {
+  background-color: #2980b9;
+}
+
+/* Button for rating individual meals */
 .rate-this-meal-button {
   display: block;
   margin: 1rem auto;
@@ -177,6 +223,69 @@ textarea {
 
 .rate-this-meal-button:hover {
   background-color: #27ae60;
+}
+
+/* Meal Card Styles */
+.meal-card {
+  background-color: #ecf0f1;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.meal-card h3 {
+  margin-top: 0;
+  font-size: 1.2rem;
+}
+
+.meal-image {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+/* Social share buttons style */
+.social-share-buttons {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+/* Share section below form */
+.share-section {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+/* Style for auth links (on login/register page) */
+.auth-links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Buttons after submitting a review */
+.post-share-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+/* Buttons inside review cards (MyReviews.js) */
+.review-card-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 1.5rem;
 }
 
 /* Responsive Design */
@@ -201,5 +310,40 @@ textarea {
 
   .form-description {
     padding: 0 1rem;
+  }
+
+  nav {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav-buttons {
+    position: static;
+    transform: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 1rem 0;
+  }
+
+  .user-actions {
+    position: static;
+    top: auto;
+    right: auto;
+    transform: none;
+    margin-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+  }
+
+  .post-share-buttons {
+    gap: 10px;
+    margin-top: 1.5rem;
+  }
+
+  .review-card-buttons {
+    gap: 10px;
+    margin-top: 1.5rem;
   }
 }

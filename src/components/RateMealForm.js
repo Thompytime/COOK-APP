@@ -1,3 +1,4 @@
+// src/components/RateMealForm.js
 import React from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
@@ -13,6 +14,8 @@ const RateMealForm = () => {
   const [image, setImage] = React.useState(null)
   const [preview, setPreview] = React.useState('')
   const [uploading, setUploading] = React.useState(false)
+  const [submitted, setSubmitted] = React.useState(false)
+  const [imageType, setImageType] = React.useState('') // ✅ New field added
 
   // Define meals inside component
   const meals = {
@@ -42,10 +45,10 @@ const RateMealForm = () => {
     }
   }
 
-  // Log meals object once
+  // Log once on load
   React.useEffect(() => {
     console.log('Available meals:', meals)
-  }) // ⚠️ No dependency array → runs once
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Parse ID
   const numericMealId = parseInt(mealId)
@@ -62,8 +65,8 @@ const RateMealForm = () => {
           Available meal IDs: {Object.keys(meals).join(', ')}
         </pre>
 
-        <button onClick={() => navigate('/rate')}>
-          Go back to all meals
+        <button onClick={() => navigate('/rate')} className="rate-meals-button">
+          Go back to Rate Meals
         </button>
       </div>
     )
@@ -90,15 +93,14 @@ const RateMealForm = () => {
 
     let imageUrl = null
 
+    // Upload image if provided
     if (image) {
       setUploading(true)
       const fileExt = image.name.split('.').pop()
       const fileName = `${Math.random()}-${Date.now()}.${fileExt}`
       const filePath = `ratings/${fileName}`
 
-      const { error: uploadError } = await supabase.storage
-        .from('meal-images')
-        .upload(filePath, image)
+      const { error: uploadError } = await supabase.storage.from('meal-images').upload(filePath, image)
 
       if (uploadError) {
         alert("Could not upload image")
@@ -110,6 +112,7 @@ const RateMealForm = () => {
       imageUrl = data.publicUrl
     }
 
+    // Insert into Supabase
     const { error } = await supabase
       .from('meal_ratings')
       .insert({
@@ -118,7 +121,8 @@ const RateMealForm = () => {
         rating: parseInt(rating),
         critique,
         suggested_side_dishes: sideDishes,
-        image_url: imageUrl
+        image_url: imageUrl,
+        image_type: imageType // ✅ Store selected image type
       })
 
     setUploading(false)
@@ -129,8 +133,46 @@ const RateMealForm = () => {
       return
     }
 
-    alert("Your rating has been saved!")
+    // ✅ Don't redirect yet – show success message + share button
+    setSubmitted(true)
+  }
+
+  const handleGoBack = () => {
     navigate('/rate')
+  }
+
+  // Dynamic stars for tweet
+  const starCount = '★'.repeat(parseInt(rating)) + '☆'.repeat(10 - parseInt(rating))
+  const tweetText = encodeURIComponent(`I rated ${meal.name} ${rating}/10 — ${starCount} on COOK Meals Rankings`)
+  const pageUrl = encodeURIComponent(window.location.href)
+
+  if (submitted) {
+    return (
+      <div className="rate-meal-form">
+        <h2>{meal.name}</h2>
+        <img src={meal.image} alt={meal.name} className="meal-image" />
+
+        <div className="submission-success">
+          <h3>Your rating has been saved!</h3>
+
+          {/* Share and Back buttons */}
+          <div className="post-share-buttons">
+            <a
+              href={`https://twitter.com/intent/tweet?text= ${tweetText}&url=${pageUrl}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rate-meals-button"
+              style={{ textDecoration: 'none' }}
+            >
+              Share on Twitter/X
+            </a>
+            <button className="rate-meals-button" onClick={handleGoBack}>
+              Back to Rate Meals
+            </button>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -172,6 +214,7 @@ const RateMealForm = () => {
           />
         </label>
 
+        {/* Image upload section */}
         <label>
           Upload an image of your meal or setting:
           <input
@@ -187,25 +230,33 @@ const RateMealForm = () => {
           </div>
         )}
 
+        {/* Image type selector */}
+        {image && (
+          <label className="image-type-label">
+            This image shows:
+            <select
+              value={imageType}
+              onChange={(e) => setImageType(e.target.value)}
+              required
+            >
+              <option value="">Select...</option>
+              <option value="meal">The meal itself</option>
+              <option value="setting">Where I ate it</option>
+              <option value="both">Both</option>
+            </select>
+          </label>
+        )}
+
+        {/* Submit / Cancel */}
         <div className="social-share-buttons">
-          <button type="submit" disabled={uploading}>
+          <button type="submit" disabled={uploading} className="rate-meals-button">
             {uploading ? 'Uploading...' : 'Submit Rating'}
           </button>
-          <button type="button" onClick={() => navigate('/rate')}>
+          <button type="button" onClick={handleGoBack} className="rate-meals-button">
             Cancel
           </button>
         </div>
       </form>
-
-      <div className="share-section">
-        <button onClick={() => {
-          const url = window.location.href
-          const text = `I rated ${meal.name} ★★★★★ on COOK Meals Rankings`
-          window.open(`https://twitter.com/intent/tweet?url= ${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, '_blank')
-        }}>
-          Share on Twitter/X
-        </button>
-      </div>
     </div>
   )
 }
